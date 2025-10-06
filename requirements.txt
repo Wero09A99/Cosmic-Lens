@@ -1,6 +1,16 @@
+# Dependencias principales
 Flask>=2.0
 Pillow>=9.0
-requests>=2.28
-numpy>=1.21
 astropy>=5.0
 astroquery>=0.4.6
+
+# Dependencias nativas de Python incluidas por defecto:
+# - math
+# - shutil
+# - io
+# - os
+# - json
+# - pathlib
+# - sys
+# - argparse
+# - datetime
