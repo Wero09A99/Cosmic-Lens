@@ -1,0 +1,376 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Datasets - Cosmic Lens</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+      .datasets-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 30px;
+        background: #0a0a0a;
+        min-height: 100vh;
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #4a9eff;
+        text-decoration: none;
+        font-size: 16px;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        color: white;
+      }
+      .page-header h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #4a9eff 0%, #7b68ee 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .page-header p {
+        color: #888;
+        font-size: 18px;
+      }
+      .datasets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+      .dataset-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        border-radius: 16px;
+        padding: 28px;
+        border: 2px solid #333;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+      .dataset-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #4a9eff 0%, #7b68ee 100%);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+      }
+      .dataset-card:hover::before {
+        transform: scaleX(1);
+      }
+      .dataset-card:hover {
+        border-color: #4a9eff;
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(74, 158, 255, 0.4);
+      }
+      .dataset-card.downloading {
+        border-color: #ffa500;
+        opacity: 0.7;
+        pointer-events: none;
+      }
+      .dataset-card.downloaded {
+        border-color: #4caf50;
+      }
+      .dataset-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      .dataset-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #4a9eff;
+        margin: 0;
+      }
+      .dataset-badge {
+        background: #4a9eff;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .dataset-description {
+        color: #ccc;
+        line-height: 1.6;
+        margin: 15px 0;
+        font-size: 14px;
+      }
+      .dataset-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 15px 0;
+        font-size: 13px;
+      }
+      .dataset-info-item {
+        display: flex;
+        align-items: center;
+        color: #999;
+      }
+      .dataset-info-item strong {
+        color: #ccc;
+        margin-left: 5px;
+      }
+      .dataset-credit {
+        font-size: 12px;
+        color: #666;
+        font-style: italic;
+        margin-top: 10px;
+      }
+      .download-btn {
+        width: 100%;
+        padding: 12px;
+        background: #4a9eff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 15px;
+      }
+      .download-btn:hover {
+        background: #3a8eef;
+      }
+      .download-btn:disabled {
+        background: #666;
+        cursor: not-allowed;
+      }
+      .progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #333;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-top: 10px;
+        display: none;
+      }
+      .progress-bar.active {
+        display: block;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4a9eff 0%, #7b68ee 100%);
+        width: 0%;
+        transition: width 0.3s;
+        animation: pulse 1.5s infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+      .status-message {
+        text-align: center;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 8px;
+        display: none;
+      }
+      .status-message.success {
+        background: rgba(76, 175, 80, 0.2);
+        border: 1px solid #4caf50;
+        color: #4caf50;
+        display: block;
+      }
+      .status-message.error {
+        background: rgba(244, 67, 54, 0.2);
+        border: 1px solid #f44336;
+        color: #f44336;
+        display: block;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+      }
+      .empty-state h2 {
+        color: #888;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="datasets-container">
+      <a href="/" class="back-link">← Back to Viewer</a>
+      
+      <div class="page-header">
+        <h1>🌌 Space Image Catalog</h1>
+        <p>Explore your datasets downloaded from MAST</p>
+        <a href="/download-from-mast" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: linear-gradient(135deg, #4a9eff 0%, #7b68ee 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.3s;">
+          🔭 Download New Dataset
+        </a>
+      </div>
+
+      <div id="status-message" class="status-message"></div>
+
+      {% if local_datasets %}
+      <div class="datasets-grid">
+        {% for dataset_id, dataset in local_datasets.items() %}
+        <div class="dataset-card local-dataset" id="card-{{ dataset_id }}">
+          <div class="dataset-header">
+            <h3 class="dataset-title">{{ dataset.name }}</h3>
+            <span class="dataset-badge">{{ dataset.file_count }} archivos</span>
+          </div>
+          
+          <p class="dataset-description">{{ dataset.description }}</p>
+          
+          <div class="dataset-info">
+            <div class="dataset-info-item">
+              🔭 <strong>{{ dataset.telescope }}</strong>
+            </div>
+            <div class="dataset-info-item">
+              📅 <strong>{{ dataset.download_date[:10] }}</strong>
+            </div>
+            <div class="dataset-info-item">
+              💾 <strong>{{ (dataset.total_size / 1024 / 1024) | round(2) }} MB</strong>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 15px;">
+            <button class="download-btn" onclick="loadLocalDataset('{{ dataset_id }}', '{{ dataset.name }}')">
+              👁️ Ver en Visor
+            </button>
+            <button class="download-btn" onclick="deleteDataset('{{ dataset_id }}', '{{ dataset.name }}')" style="background: #f44336; max-width: 50px;">
+              🗑️
+            </button>
+          </div>
+          
+          <div class="progress-bar" id="progress-{{ dataset_id }}">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <h2>📭 No datasets downloaded from MAST</h2>
+        <p style="margin: 20px 0;">Download datasets from MAST in two ways:</p>
+        
+        <div style="margin: 30px 0;">
+          <a href="/download-from-mast" style="display: inline-block; padding: 16px 32px; background: linear-gradient(135deg, #4a9eff 0%, #7b68ee 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; font-size: 16px;">
+            🔭 Download from Web
+          </a>
+        </div>
+        
+        <p style="color: #888; margin: 20px 0;">Or use the terminal:</p>
+        <code style="display: block; margin: 20px 0; padding: 15px; background: #1a1a1a; border-radius: 8px; color: #4a9eff;">
+          python scripts/download_mast_files.py --target M16 --telescope HST --max-files 10
+        </code>
+        <p style="color: #888; font-size: 14px;">Downloaded datasets will appear here automatically</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status-message');
+        statusEl.textContent = message;
+        statusEl.className = 'status-message ' + type;
+        
+        if (type === 'success') {
+          setTimeout(() => {
+            statusEl.style.display = 'none';
+          }, 5000);
+        }
+      }
+
+      async function loadLocalDataset(datasetId, datasetName) {
+        const card = document.getElementById('card-' + datasetId);
+        const buttons = card.querySelectorAll('.download-btn');
+        const progress = document.getElementById('progress-' + datasetId);
+        
+        // Update UI
+        card.classList.add('downloading');
+        buttons.forEach(btn => btn.disabled = true);
+        buttons[0].textContent = '⏳ Cargando...';
+        progress.classList.add('active');
+        
+        try {
+          const response = await fetch(`/load-local-dataset/${datasetId}`);
+          const data = await response.json();
+          
+          if (data.success) {
+            card.classList.remove('downloading');
+            card.classList.add('downloaded');
+            buttons[0].textContent = '✅ Cargado';
+            progress.classList.remove('active');
+            
+            showStatus(`✅ ${datasetName} cargado exitosamente. Redirigiendo al visor...`, 'success');
+            
+            // Redirect to viewer after 1 second
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1000);
+          } else {
+            throw new Error(data.error || 'Error desconocido');
+          }
+        } catch (error) {
+          card.classList.remove('downloading');
+          buttons.forEach(btn => btn.disabled = false);
+          buttons[0].textContent = '👁️ Ver en Visor';
+          progress.classList.remove('active');
+          
+          showStatus(`❌ Error al cargar: ${error.message}`, 'error');
+        }
+      }
+
+      async function deleteDataset(datasetId, datasetName) {
+        if (!confirm(`¿Estás seguro de eliminar "${datasetName}"?\n\nEsto eliminará todos los archivos del dataset.`)) {
+          return;
+        }
+
+        const card = document.getElementById('card-' + datasetId);
+        
+        try {
+          const response = await fetch(`/delete-dataset/${datasetId}`, {
+            method: 'DELETE'
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Animate card removal
+            card.style.transition = 'all 0.3s ease-out';
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.8)';
+            
+            setTimeout(() => {
+              card.remove();
+              
+              // Check if there are no more datasets
+              const grid = document.querySelector('.datasets-grid');
+              if (grid && grid.children.length === 0) {
+                location.reload();
+              }
+            }, 300);
+            
+            showStatus(`✅ ${datasetName} eliminado exitosamente`, 'success');
+          } else {
+            throw new Error(data.error || 'Error desconocido');
+          }
+        } catch (error) {
+          showStatus(`❌ Error al eliminar: ${error.message}`, 'error');
+        }
+      }
+    </script>
+  </body>
+</html>

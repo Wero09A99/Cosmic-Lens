@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Data files
+data/datasets/
+data/hst/
+data/hst_temp/
+data/*.fits
+data/*.png
+data/*.jpg
+data/*.jpeg
+data/*.tif
+data/*.tiff
+data/downloaded_catalog.json
+
+# Tiles cache
+tiles/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log

@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cosmic Lens - FITS Viewer</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+      .welcome-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        animation: fadeIn 0.3s;
+      }
+      .welcome-box {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 550px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+        border: 2px solid #4a9eff;
+        animation: slideIn 0.4s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .welcome-box h2 {
+        color: #4a9eff;
+        margin-top: 0;
+        font-size: 28px;
+        text-align: center;
+      }
+      .welcome-box p {
+        color: #ccc;
+        line-height: 1.6;
+        margin: 15px 0;
+      }
+      .welcome-box ul {
+        color: #ccc;
+        line-height: 1.8;
+        margin: 20px 0;
+      }
+      .welcome-box li {
+        margin: 10px 0;
+      }
+      .welcome-box .btn-primary {
+        background: #4a9eff;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
+      .welcome-box .btn-primary:hover {
+        background: #3a8eef;
+      }
+      .help-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #4a9eff;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(74, 158, 255, 0.4);
+        z-index: 100;
+        transition: transform 0.3s;
+      }
+      .help-icon:hover {
+        transform: scale(1.1);
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Overlay de bienvenida -->
+    <div id="welcome-overlay" class="welcome-overlay">
+      <div class="welcome-box">
+        <h2>🌟 Welcome to Cosmic Lens</h2>
+        <p><strong>Explore high-resolution images with ease</strong></p>
+        <ul>
+          <li>🔍 <strong>Zoom:</strong> Use +/- buttons or mouse wheel</li>
+          <li>👆 <strong>Pan:</strong> Drag the image with your mouse</li>
+          <li>💡 <strong>Brightness:</strong> Adjust with the slider</li>
+          <li>🌌 <strong>Datasets:</strong> Download space images from Hubble and JWST</li>
+          <li>📤 <strong>Upload:</strong> Or upload your own images</li>
+        </ul>
+        <p style="font-size: 14px; color: #888;">💡 Tip: Click the "?" icon anytime to see this help</p>
+        <button class="btn-primary" onclick="closeWelcome()">Get Started!</button>
+      </div>
+    </div>
+
+    <!-- Botón de ayuda flotante -->
+    <div class="help-icon hidden" id="help-icon" onclick="showWelcome()" title="Help">
+      ?
+    </div>
+
+    <header>
+      <h1>🌌 Cosmic Lens - Image Explorer</h1>
+      <div class="controls">
+        <button id="zoom-in" title="Zoom In">+</button>
+        <button id="zoom-out" title="Zoom Out">-</button>
+        <input type="range" id="brightness" min="0.1" max="3" step="0.05" value="1" title="Adjust brightness">
+        <button id="add-label" title="Add label">🏷️ Label</button>
+        <a href="/datasets" style="text-decoration: none;">
+          <button style="background: #7b68ee;" title="Download space images">🌌 Datasets</button>
+        </a>
+        <a href="/upload" style="text-decoration: none;">
+          <button style="background: #4a9eff;" title="Upload new image">📤 Upload</button>
+        </a>
+      </div>
+    </header>
+    <main class="">
+        <section class="sidebar">
+            
+        </section>
+      <div id="viewer"></div>
+    </main>
+
+    <script>
+      const META = {{ meta|tojson }};
+      
+      // Function to close welcome overlay
+      function closeWelcome() {
+        document.getElementById('welcome-overlay').classList.add('hidden');
+        document.getElementById('help-icon').classList.remove('hidden');
+        localStorage.setItem('welcomeSeen', 'true');
+      }
+      
+      // Function to show welcome overlay
+      function showWelcome() {
+        document.getElementById('welcome-overlay').classList.remove('hidden');
+        document.getElementById('help-icon').classList.add('hidden');
+      }
+      
+      // Check if user has seen welcome
+      window.addEventListener('DOMContentLoaded', function() {
+        if (localStorage.getItem('welcomeSeen') === 'true') {
+          closeWelcome();
+        }
+      });
+    </script>
+    <script src="/static/viewer.js"></script>
+  </body>
+</html>

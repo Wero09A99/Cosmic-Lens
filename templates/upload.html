@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Upload Image - Cosmic Lens</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+      body {
+        background: #0a0a0a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .upload-container {
+        max-width: 650px;
+        width: 100%;
+        margin: 50px auto;
+        padding: 40px;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        border: 2px solid #333;
+        animation: slideIn 0.5s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .upload-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .file-input-wrapper {
+        position: relative;
+        padding: 40px;
+        border: 2px dashed #4a9eff;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .file-input-wrapper:hover {
+        border-color: #6bb3ff;
+        background: rgba(74, 158, 255, 0.1);
+      }
+      .file-input-wrapper input[type="file"] {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+      .upload-icon {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+      .upload-btn {
+        padding: 12px 30px;
+        background: #4a9eff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .upload-btn:hover {
+        background: #3a8eef;
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #4a9eff;
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      .flash-message {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        background: #4a9eff;
+        color: white;
+      }
+      .info-box {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(74, 158, 255, 0.1);
+        border-left: 3px solid #4a9eff;
+        border-radius: 4px;
+      }
+      .info-box h3 {
+        margin-top: 0;
+        color: #4a9eff;
+      }
+      .info-box ul {
+        margin: 10px 0;
+    </style>
+  </head>
+  <body>
+    <div class="upload-container">
+      <a href="/" class="back-link">← Back to Viewer</a>
+      
+      <h1>Upload Image</h1>
+      
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      
+      <form method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="file-input-wrapper">
+          <div class="upload-icon">Upload Image</div>
+          <p><strong>Drag your image here or click to select</strong></p>
+          <p style="color: #888; font-size: 14px;">Supported formats: FITS, TIFF, JPG, PNG</p>
+          <input type="file" name="file" id="file" accept="image/*,.fits,.fit" required>
+        
+        <button type="submit" class="upload-btn">Upload and View</button>
+      </form>
+      
+      <div class="info-box">
+        <h3>💡 Tips</h3>
+        <ul>
+          <li>The most recent image will load automatically</li>
+          <li>You can also copy images directly to the <code>data/</code> folder</li>
+          <li>Reload the page (F5) to see new images</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
